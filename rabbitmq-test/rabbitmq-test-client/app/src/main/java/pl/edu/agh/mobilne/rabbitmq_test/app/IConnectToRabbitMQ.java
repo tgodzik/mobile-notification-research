@@ -4,67 +4,47 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import java.io.IOException;
-
 /**
  * Base class for objects that connect to a RabbitMQ Broker
  */
 public abstract class IConnectToRabbitMQ {
-    public String mServer;
-    public String mExchange;
 
-    protected Channel mModel = null;
-    protected Connection mConnection;
+    public String serverPath;
+    public String queueName;
 
-    protected boolean Running ;
+    protected Channel channel = null;
+    protected Connection connection;
 
-    protected  String MyExchangeType ;
+    protected boolean isRunning;
 
     /**
      *
      * @param server The server address
-     * @param exchange The named exchange
-     * @param exchangeType The exchange type name
+     * @param queue The named queue
      */
-    public IConnectToRabbitMQ(String server, String exchange, String exchangeType)
+    public IConnectToRabbitMQ(String server, String queue)
     {
-        mServer = server;
-        mExchange = exchange;
-        MyExchangeType = exchangeType;
-    }
-
-    public void Dispose()
-    {
-        Running = false;
-
-        try {
-            if (mConnection!=null)
-                mConnection.close();
-            if (mModel != null)
-                mModel.abort();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
+        serverPath = server;
+        queueName = queue;
     }
 
     /**
-     * Connect to the broker and create the exchange
+     * Connect to the broker and create the queue
      * @return success
      */
     public boolean connectToRabbitMQ()
     {
-        if(mModel!= null && mModel.isOpen() )//already declared
+        if(channel != null && channel.isOpen() )
             return true;
         try
         {
             ConnectionFactory connectionFactory = new ConnectionFactory();
-            connectionFactory.setHost(mServer);
-            mConnection = connectionFactory.newConnection();
-            mModel = mConnection.createChannel();
-            mModel.exchangeDeclare(mExchange, MyExchangeType, true);
-
+            connectionFactory.setUsername("test");
+            connectionFactory.setPassword("test");
+            connectionFactory.setHost(serverPath);
+            connection = connectionFactory.newConnection();
+            channel = connection.createChannel();
+            channel.queueDeclare("hello", false, false, false, null);
             return true;
         }
         catch (Exception e)

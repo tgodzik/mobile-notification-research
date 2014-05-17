@@ -1,48 +1,59 @@
 package pl.edu.agh.mobilne.rabbitmq_test.app;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 
 
-public class MainActivity  extends Activity {
-    private MessageConsumer mConsumer;
-    private TextView mOutput;
+public class MainActivity extends Activity {
+    private MessageConsumer consumer;
+    private TextView output;
 
-    /** Called when the activity is first created. */
+
+    private class EstablishConnectionTask extends AsyncTask<MessageConsumer, Integer, Boolean> {
+
+        protected Boolean doInBackground(MessageConsumer... consumers) {
+            return consumers[0].connectToRabbitMQ();
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        protected void onPostExecute(Boolean result) {
+            if (result)
+                Toast.makeText(getApplicationContext(), "Connection established", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getApplicationContext(), "Problem establishing connection", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //The output TextView we'll use to display messages
-        mOutput =  (TextView) findViewById(R.id.output);
+        output = (TextView) findViewById(R.id.output);
 
         //Create the consumer
-        mConsumer = new MessageConsumer("192.168.2.8",
-                "logs",
-                "fanout");
+        consumer = new MessageConsumer("192.168.2.8", "hello");
 
         //Connect to broker
-        mConsumer.connectToRabbitMQ();
+        new EstablishConnectionTask().execute(consumer);
 
         //register for messages
-        mConsumer.setOnReceiveMessageHandler(new MessageConsumer.OnReceiveMessageHandler(){
+        consumer.setOnReceiveMessageHandler(new MessageConsumer.OnReceiveMessageHandler() {
 
-            public void onReceiveMessage(byte[] message) {
-                String text = "";
-                try {
-                    text = new String(message, "UTF8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                mOutput.append("\n"+text);
+            public void onReceiveMessage(String message) {
+                output.append("\n msg: " + message);
             }
         });
 
@@ -51,12 +62,12 @@ public class MainActivity  extends Activity {
     @Override
     protected void onResume() {
         super.onPause();
-        mConsumer.connectToRabbitMQ();
+        new EstablishConnectionTask().execute(consumer);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mConsumer.dispose();
+        consumer.dispose();
     }
 }

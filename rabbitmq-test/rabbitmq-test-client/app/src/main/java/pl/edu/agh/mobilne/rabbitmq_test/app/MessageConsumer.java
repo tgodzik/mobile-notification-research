@@ -6,53 +6,52 @@ import com.rabbitmq.client.QueueingConsumer;
 
 import java.io.IOException;
 
-/**
- *Consumes messages from a RabbitMQ broker
- *
- */
-public class MessageConsumer extends  IConnectToRabbitMQ{
 
-    public MessageConsumer(String server, String exchange, String exchangeType) {
-        super(server, exchange, exchangeType);
+/**
+ * Consumes messages from a RabbitMQ broker
+ */
+public class MessageConsumer extends IConnectToRabbitMQ {
+
+
+    public MessageConsumer(String server, String exchange) {
+        super(server, exchange);
     }
 
-    //The Queue name for this consumer
-    private String mQueue;
-    private QueueingConsumer MySubscription;
+    private QueueingConsumer consumer;
 
     //last message to post back
-    private byte[] mLastMessage;
+    private String message;
 
     // An interface to be implemented by an object that is interested in messages(listener)
-    public interface OnReceiveMessageHandler{
-        public void onReceiveMessage(byte[] message);
-    };
+    public interface OnReceiveMessageHandler {
+        public void onReceiveMessage(String message);
+    }
 
     //A reference to the listener, we can only have one at a time(for now)
-    private OnReceiveMessageHandler mOnReceiveMessageHandler;
+    private OnReceiveMessageHandler onReceiveMessageHandler;
 
     /**
-     *
      * Set the callback for received messages
+     *
      * @param handler The callback
      */
-    public void setOnReceiveMessageHandler(OnReceiveMessageHandler handler){
-        mOnReceiveMessageHandler = handler;
-    };
+    public void setOnReceiveMessageHandler(OnReceiveMessageHandler handler) {
+        onReceiveMessageHandler = handler;
+    }
 
-    private Handler mMessageHandler = new Handler();
-    private Handler mConsumeHandler = new Handler();
+    private Handler messageHandler = new Handler();
+    private Handler consumeHandler = new Handler();
 
     // Create runnable for posting back to main thread
-    final Runnable mReturnMessage = new Runnable() {
+    final Runnable returnMessage = new Runnable() {
         public void run() {
-            mOnReceiveMessageHandler.onReceiveMessage(mLastMessage);
+            onReceiveMessageHandler.onReceiveMessage(message);
         }
     };
 
-    final Runnable mConsumeRunner = new Runnable() {
+    final Runnable consumeRunner = new Runnable() {
         public void run() {
-            Consume();
+            consume();
         }
     };
 
@@ -60,76 +59,38 @@ public class MessageConsumer extends  IConnectToRabbitMQ{
      * Create Exchange and then start consuming. A binding needs to be added before any messages will be delivered
      */
     @Override
-    public boolean connectToRabbitMQ()
-    {
-        if(super.connectToRabbitMQ())
-        {
+    public boolean connectToRabbitMQ() {
+
+        if (super.connectToRabbitMQ()) {
 
             try {
-                mQueue = mModel.queueDeclare().getQueue();
-                MySubscription = new QueueingConsumer(mModel);
-                mModel.basicConsume(mQueue, false, MySubscription);
+                consumer = new QueueingConsumer(channel);
+                channel.basicConsume(queueName, false, consumer);
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
             }
-            if (MyExchangeType == "fanout")
-                AddBinding("");//fanout has default binding
 
-            Running = true;
-            mConsumeHandler.post(mConsumeRunner);
+            isRunning = true;
+            consumeHandler.post(consumeRunner);
 
             return true;
         }
         return false;
     }
 
-    /**
-     * Add a binding between this consumers Queue and the Exchange with routingKey
-     * @param routingKey the binding key eg GOOG
-     */
-    public void AddBinding(String routingKey)
-    {
-        try {
-            mModel.queueBind(mQueue, mExchange, routingKey);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
-    /**
-     * Remove binding between this consumers Queue and the Exchange with routingKey
-     * @param routingKey the binding key eg GOOG
-     */
-    public void RemoveBinding(String routingKey)
-    {
-        try {
-            mModel.queueUnbind(mQueue, mExchange, routingKey);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    private void Consume()
-    {
-        Thread thread = new Thread()
-        {
+    private void consume() {
+        Thread thread = new Thread() {
 
             @Override
             public void run() {
-                while(Running){
+                while (isRunning) {
                     QueueingConsumer.Delivery delivery;
                     try {
-                        delivery = MySubscription.nextDelivery();
-                        mLastMessage = delivery.getBody();
-                        mMessageHandler.post(mReturnMessage);
-                        try {
-                            mModel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        delivery = consumer.nextDelivery();
+                        message = new String(delivery.getBody());
+                        messageHandler.post(returnMessage);
                     } catch (InterruptedException ie) {
                         ie.printStackTrace();
                     }
@@ -140,7 +101,7 @@ public class MessageConsumer extends  IConnectToRabbitMQ{
 
     }
 
-    public void dispose(){
-        Running = false;
+    public void dispose() {
+        isRunning = false;
     }
 }
