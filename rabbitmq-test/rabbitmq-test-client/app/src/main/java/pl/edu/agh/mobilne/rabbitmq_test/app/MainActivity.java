@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
         consumer.setOnReceiveMessageHandler(new MessageConsumer.OnReceiveMessageHandler() {
 
             public void onReceiveMessage(String message) {
+//                Toast.makeText(getApplicationContext(), "Received message", Toast.LENGTH_SHORT).show();
                 output.append("\n msg: " + message);
             }
         });
@@ -62,7 +63,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onPause();
-        new EstablishConnectionTask().execute(consumer);
+        //new EstablishConnectionTask().execute(consumer);
     }
 
     @Override

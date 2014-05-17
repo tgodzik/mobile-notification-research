@@ -103,5 +103,11 @@ public class MessageConsumer extends IConnectToRabbitMQ {
 
     public void dispose() {
         isRunning = false;
+
+        try {
+            channel.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
