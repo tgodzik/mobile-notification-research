@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
     private class EstablishConnectionTask extends AsyncTask<MessageConsumer, Integer, Boolean> {
 
         protected Boolean doInBackground(MessageConsumer... consumers) {
-            return consumers[0].connectToRabbitMQ();
+            return consumers[0].createConsumer();
         }
 
         protected void onProgressUpdate(Integer... progress) {
@@ -44,10 +44,8 @@ public class MainActivity extends Activity {
         output = (TextView) findViewById(R.id.output);
 
         //Create the consumer
-        consumer = new MessageConsumer("192.168.2.8", "hello");
+        consumer = new MessageConsumer("10.0.2.2", "hello");
 
-        //Connect to broker
-        new EstablishConnectionTask().execute(consumer);
 
         //register for messages
         consumer.setOnReceiveMessageHandler(new MessageConsumer.OnReceiveMessageHandler() {
@@ -55,6 +53,7 @@ public class MainActivity extends Activity {
             public void onReceiveMessage(String message) {
 //                Toast.makeText(getApplicationContext(), "Received message", Toast.LENGTH_SHORT).show();
                 output.append("\n msg: " + message);
+                Statistics.messagesNumber++;
             }
         });
 
@@ -63,7 +62,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onPause();
-        //new EstablishConnectionTask().execute(consumer);
+        new EstablishConnectionTask().execute(consumer);
     }
 
     @Override
