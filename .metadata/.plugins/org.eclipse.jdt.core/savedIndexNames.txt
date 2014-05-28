@@ -1,0 +1,2 @@
+INDEX VERSION 1.126+/home/mikolaj/projects/mobile-notification-research/.metadata/.plugins/org.eclipse.jdt.core
+4191267967.index
