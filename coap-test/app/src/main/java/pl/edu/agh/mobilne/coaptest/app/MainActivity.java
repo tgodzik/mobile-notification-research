@@ -14,7 +14,7 @@ public class MainActivity extends Activity {
     /**
      * Connection client
      */
-    private BasicCoapClient client;
+    private TestClient client;
 
     /**
      * Showing messages
@@ -22,9 +22,9 @@ public class MainActivity extends Activity {
     private TextView output;
 
 
-    private class EstablishConnectionTask extends AsyncTask<BasicCoapClient, Integer, Boolean> {
+    private class EstablishConnectionTask extends AsyncTask<TestClient, Integer, Boolean> {
 
-        protected Boolean doInBackground(BasicCoapClient... clients) {
+        protected Boolean doInBackground(TestClient... clients) {
             return clients[0].create();
         }
 
