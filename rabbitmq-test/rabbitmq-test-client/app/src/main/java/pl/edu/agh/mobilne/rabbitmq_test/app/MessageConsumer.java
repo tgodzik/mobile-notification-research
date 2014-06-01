@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * Consumes messages from a RabbitMQ broker
  */
-public class MessageConsumer {
+public class MessageConsumer implements TestClient {
 
     public String serverPath;
     public String queueName;
@@ -29,12 +29,12 @@ public class MessageConsumer {
     private Handler consumeHandler = new Handler();
 
     //A reference to the listener, we can only have one at a time(for now)
-    private OnReceiveMessageHandler onReceiveMessageHandler;
+    private MessageHandler messageListener;
 
     // Create runnable for posting back to main thread
     final Runnable returnMessage = new Runnable() {
         public void run() {
-            onReceiveMessageHandler.onReceiveMessage(lastMessage);
+            messageListener.onReceiveMessage(lastMessage);
         }
     };
 
@@ -44,11 +44,6 @@ public class MessageConsumer {
         }
     };
 
-
-    // An interface to be implemented by an object that is interested in messages(listener)
-    public interface OnReceiveMessageHandler {
-        public void onReceiveMessage(String message);
-    }
 
     public MessageConsumer(String server, String queue) {
         serverPath = server;
@@ -60,15 +55,16 @@ public class MessageConsumer {
      *
      * @param handler The callback
      */
-    public void setOnReceiveMessageHandler(OnReceiveMessageHandler handler) {
-        onReceiveMessageHandler = handler;
+    @Override
+    public void setMessageHandler(MessageHandler handler) {
+        messageListener = handler;
     }
 
      /**
      * Connect to the broker and create the queue
      * @return success
      */
-    public boolean connectToRabbitMQ()
+    public boolean connect()
     {
         if(channel != null && channel.isOpen() )
             return true;
@@ -92,9 +88,10 @@ public class MessageConsumer {
     /**
      * Create Exchange and then start consuming. A binding needs to be added before any messages will be delivered
      */
-    public boolean createConsumer() {
+    @Override
+    public boolean create() {
 
-        if (connectToRabbitMQ()) {
+        if (connect()) {
 
             try {
                 consumer = new QueueingConsumer(channel);
@@ -134,6 +131,7 @@ public class MessageConsumer {
 
     }
 
+    @Override
     public void dispose() {
         isRunning = false;
 

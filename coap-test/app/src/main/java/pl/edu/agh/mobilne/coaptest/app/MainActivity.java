@@ -1,23 +1,30 @@
-package pl.edu.agh.mobilne.rabbitmq_test.app;
+package pl.edu.agh.mobilne.coaptest.app;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 public class MainActivity extends Activity {
 
-    /** Connection client */
-    private TestClient client;
 
-    /** Showing messages */
+    /**
+     * Connection client
+     */
+    private BasicCoapClient client;
+
+    /**
+     * Showing messages
+     */
     private TextView output;
 
 
-    private class EstablishConnectionTask extends AsyncTask<TestClient, Integer, Boolean> {
+    private class EstablishConnectionTask extends AsyncTask<BasicCoapClient, Integer, Boolean> {
 
-        protected Boolean doInBackground(TestClient... clients) {
+        protected Boolean doInBackground(BasicCoapClient... clients) {
             return clients[0].create();
         }
 
@@ -45,10 +52,10 @@ public class MainActivity extends Activity {
         output = (TextView) findViewById(R.id.output);
 
         //Create the client
-        client = new MessageConsumer("10.0.2.2", "hello");
+        client = new BasicCoapClient("10.0.2.2", 5683);
 
         //register for messages
-        client.setMessageHandler(new TestClient.MessageHandler() {
+        client.setMessageListener(new TestClient.MessageHandler() {
             public void onReceiveMessage(String message) {
                 output.append("\n msg: " + message);
                 Statistics.messagesNumber++;

@@ -1,5 +1,9 @@
 package pl.edu.agh.mobilne.coaptest.app;
 
+
+import android.os.Handler;
+
+import org.ws4d.coap.connection.BasicCoapChannelManager;
 import org.ws4d.coap.interfaces.CoapChannelManager;
 import org.ws4d.coap.interfaces.CoapClient;
 import org.ws4d.coap.interfaces.CoapClientChannel;
@@ -11,33 +15,65 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 
-public class BasicCoapClient implements CoapClient {
+public class BasicCoapClient implements CoapClient, TestClient {
 
-    private static final String SERVER_ADDRESS = "10.0.2.2";
-    private static final int PORT = 5683;
+    private String SERVER_ADDRESS = "10.0.2.2";
+    private int PORT = 5683;
     CoapChannelManager channelManager = null;
     CoapClientChannel clientChannel = null;
+    private MessageHandler messageListener;
 
+    private String lastMessage = "no msg";
 
-    public void sendRequest(){
-        try {
-            clientChannel = channelManager.connect(this, InetAddress.getByName(SERVER_ADDRESS), PORT);
-            CoapRequest coapRequest = clientChannel.createRequest(true, CoapRequestCode.GET);
-            clientChannel.sendMessage(coapRequest);
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+    private Handler messageHandler = new Handler();
+    final Runnable returnMessage = new Runnable() {
+        public void run() {
+            messageListener.onReceiveMessage(lastMessage);
         }
+    };
+
+    public BasicCoapClient(String serverName, int port) {
+        this.SERVER_ADDRESS = serverName;
+        this.PORT = port;
     }
 
     @Override
     public void onConnectionFailed(CoapClientChannel channel, boolean notReachable, boolean resetByServer) {
-
         System.out.println("Connection Failed");
     }
 
     @Override
     public void onResponse(CoapClientChannel channel, CoapResponse response) {
         System.out.println("Received response");
+        lastMessage = new String(response.getPayload());
+        messageHandler.post(returnMessage);
+    }
+
+    @Override
+    public void setMessageListener(MessageHandler handler) {
+        this.messageListener = handler;
+    }
+
+    @Override
+    public boolean create() {
+        try {
+            channelManager = BasicCoapChannelManager.getInstance();
+            clientChannel = channelManager.connect(this, InetAddress.getByName(SERVER_ADDRESS), PORT);
+            CoapRequest coapRequest = clientChannel.createRequest(true, CoapRequestCode.GET);
+            clientChannel.sendMessage(coapRequest);
+            System.out.println("Sent Request");
+
+        } catch (UnknownHostException e) {
+            return false;
+        }
+        return true;
+    }
+
+
+
+    @Override
+    public void dispose() {
+        clientChannel.close();
+
     }
 }

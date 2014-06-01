@@ -1,5 +1,4 @@
-package pl.edu.agh.mobilne.rabbitmq_test.app;
-
+package pl.edu.agh.mobilne.coaptest.app;
 
 public class Statistics {
 
