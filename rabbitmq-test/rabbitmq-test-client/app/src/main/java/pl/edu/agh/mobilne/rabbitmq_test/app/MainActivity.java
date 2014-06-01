@@ -3,17 +3,22 @@ package pl.edu.agh.mobilne.rabbitmq_test.app;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-    /** Connection client */
+    /**
+     * Connection client
+     */
     private TestClient client;
 
-    /** Showing messages */
-    private TextView output;
-
+    /**
+     * Showing messages
+     */
+    private EditText delay;
+    private EditText msgNum;
 
     private class EstablishConnectionTask extends AsyncTask<TestClient, Integer, Boolean> {
 
@@ -42,7 +47,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         //The output TextView we'll use to display messages
-        output = (TextView) findViewById(R.id.output);
+        delay = (EditText) findViewById(R.id.delayField);
+
+        msgNum = (EditText) findViewById(R.id.msgNumField);
 
         //Create the client
         client = new MessageConsumer("10.0.2.2", "hello");
@@ -50,8 +57,9 @@ public class MainActivity extends Activity {
         //register for messages
         client.setMessageHandler(new TestClient.MessageHandler() {
             public void onReceiveMessage(String message) {
-                output.append("\n msg: " + message);
-                Statistics.messagesNumber++;
+                Statistics.addMessage(message);
+                msgNum.setText("" + Statistics.messagesNumber);
+                delay.setText("" + Statistics.averageDelay);
             }
         });
 

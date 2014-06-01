@@ -122,7 +122,6 @@ public class MessageConsumer implements TestClient {
                         lastMessage = new String(delivery.getBody());
                         messageHandler.post(returnMessage);
                     } catch (InterruptedException ie) {
-                        ie.printStackTrace();
                     }
                 }
             }
