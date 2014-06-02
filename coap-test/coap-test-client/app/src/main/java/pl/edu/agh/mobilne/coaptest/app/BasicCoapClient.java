@@ -50,7 +50,7 @@ public class BasicCoapClient implements CoapClient, TestClient {
     }
 
     @Override
-    public void setMessageListener(MessageHandler handler) {
+    public void setMessageHandler(MessageHandler handler) {
         this.messageListener = handler;
     }
 
@@ -68,7 +68,6 @@ public class BasicCoapClient implements CoapClient, TestClient {
         }
         return true;
     }
-
 
 
     @Override

@@ -3,7 +3,7 @@ package pl.edu.agh.mobilne.coaptest.app;
 
 public interface TestClient {
 
-    void setMessageListener(MessageHandler handler);
+    void setMessageHandler(MessageHandler handler);
 
     boolean create();
 
@@ -14,3 +14,4 @@ public interface TestClient {
         public void onReceiveMessage(String message);
     }
 }
+
