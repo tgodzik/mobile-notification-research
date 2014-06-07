@@ -118,6 +118,8 @@ Rozwiązanie to miałoby się opierać o implmentację serwisu na urządzeniu, k
 \section{XMPP}
 
 \section{MQTT}
+MQTT to protokuł do komunikacji publish-subscribe opraty na TCP/IP. Jego twórcy twierdzą, że został stworzony aby umożliwić komunikację przy ograniczonej przepustowości łącza, pisząc mało kodu oraz zużywając mało energii. Cały protokuł oparty jest o centralnego brokera, który rozsyła wiadomości publikowane na jakiś temat do wszystkich zainteresowanych czytelników. Standard został opracowany przez IBM i to właśnie z implementacji tej firmy korzystaliśmy w czasie opracowywania tego projektu.
+\\ MQTT używany był już wiele razy na systemie Android. Pierwsza implemetacja GCM, czyli C2D była oparta o właśnie ten protokuł, a Facebook do tej pory korzysta z niego do wysyłania notyfikacji w swojej aplikacji.
 
 \section{CoAP}
 
