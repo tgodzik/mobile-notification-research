@@ -1,0 +1,159 @@
+\documentclass[twoside]{article}
+
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+
+\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
+\usepackage{multicol} % Used for the two-column layout of the document
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{booktabs} % Horizontal rules in tables
+\usepackage{float} % Required for tables and figures in the multi-column environment - they need to be placed in specific locations with the [H] (e.g. \begin{table}[H])
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+\usepackage{lettrine} % The lettrine is the first enlarged letter at the beginning of the text
+\usepackage{paralist} % Used for the compactitem environment which makes bullet points with less space between them
+
+\usepackage{abstract} % Allows abstract customization
+\renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+
+\usepackage{titlesec} % Allows customization of titles
+\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+\renewcommand\thesubsection{\Roman{subsection}} % Roman numerals for subsections
+\titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{} % Blank out the default header
+\fancyfoot{} % Blank out the default footer
+\fancyhead[C]{Running title $\bullet$ November 2012 $\bullet$ Vol. XXI, No. 1} % Custom header text
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{Analiza metod notyfikacji zdarzeń z uwzględnieniem specyfiki systemów mobilnych}} % Article title
+
+\author{
+\large
+\textsc{Mikołaj Jakubowski, Tomasz Godzik}\\[2mm] % Your name
+\normalsize Akademia Górniczo-Hutnicza \\ % Your institution
+\normalsize
+\vspace{-5mm}
+}
+\date{}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Insert title
+
+\thispagestyle{fancy} % All pages have headers and footers
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+%\begin{abstract}
+
+%\noindent 
+
+%\end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\begin{multicols}{2}
+
+\section{Wstęp}
+
+\lettrine[nindent=0em,lines=3]{Z} adaniem jest analiza literaturowa oraz testy wybranych metod notyfikacji zdarzeń występujących w środowiskach gridowych i sieciach telemetrycznych. Analiza powinna uwzględniać między innymi protokoły takie jak CoAP, XMPP, MQTT itp. oraz możliwość otrzymywania notyfikacji na urządzenia mobilne.
+%------------------------------------------------
+
+\section{Platforma testowa i założenia}
+Ze względu na dużą dostępność i otwartość rozwiązania jako platformę mobilą został wybrany system Android od firmy Google. Protokoły które zostały wybrane musiały posiadać implementację na tym systemie oraz spełniać następujące założenia:
+\begin{compactitem}
+\item dostarczenie wiadomości musi być gwarantowane
+\item opóźnienie w czasie dostarczania wiadomości musi być regulowane
+\item wiadomość musi mieć możliwość przeniesienia większej ilości danych niż tylko sam fakt jej wysłania i krótka notka tekstowa
+\item koszt eksploatacji musi być niski
+\item treść wiadomości nie jest możliwa do podsłuchania
+\end{compactitem}
+
+\section{Systemy notyfikacji dostępne na platformie Android}
+
+Analiza rozwiązań dostępnych na rynku doprowadziła do następującej listy:
+\begin{compactitem}
+\item XMPP - Extensible Messaging and Presence Protocol
+\item MQTT - Message Queuing Telemetry Transport 
+\item CoAP - Constrained Application Protocol
+\item GCM - Google Cloud Messaging
+\item SMS - Short Message Service
+\item AMQP - Advanced Message Queuing Protocol
+\item Restful HTTP
+\end{compactitem}
+
+\section{Odrzucone systemy notyfikacji}
+Niektóre ze znalezionych rozwiązań nie spełniły założeń projektu i zostały odrzucone.
+\subsubsection{SMS}
+a
+\subsubsection{GCM}
+b
+\subsubsection{Restful HTTP}
+c
+%------------------------------------------------
+
+\section{XMPP}
+
+\section{MQTT}
+
+\section{CoAP}
+
+\section{AMQP}
+
+\section{Testy}
+
+\section{Wyniki}
+\begin{table}[H]
+\caption{Example table}
+\centering
+\begin{tabular}{llr}
+\toprule
+\multicolumn{2}{c}{Name} \\
+\cmidrule(r){1-2}
+First name & Last Name & Grade \\
+\midrule
+John & Doe & $7.5$ \\
+Richard & Miles & $2$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%----------------------------------------------------------------------------------------
+%	REFERENCE LIST
+%----------------------------------------------------------------------------------------
+
+\begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
+
+\bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
+Figueredo, A.~J. and Wolf, P. S.~A. (2009).
+\newblock Assortative pairing and life history strategy - a cross-cultural
+  study.
+\newblock {\em Human Nature}, 20:317--330.
+ 
+\end{thebibliography}
+
+%----------------------------------------------------------------------------------------
+
+\end{multicols}
+
+\end{document}
