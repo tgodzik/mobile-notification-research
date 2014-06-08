@@ -111,11 +111,14 @@ Pisanie aplikacji na system Android, która przechwytywałaby wiadomości przych
 Google starając się ułatwić pracę programistom i starając się dbać o długość działania urządzeń na baterii zaimplementował prosty system notyfikacji na platformę Android, który utrzymuje tylko jedno otwarte połączenie. Dla zwykłych aplikacji jest to bardzo wygodne, jednak w przypadku tego projektu nie spełnia wszystkich założeń. Pierwszym problemem jaki napotykamy to ilość możliwych wiadomości do przesłania, która jest ograniczona do 4 w jednym momencie. Gdy połączymy to z brakiem gwarancji dostarczenia wiadomości oraz brakiem maksymalnego gwarantowanego opóźnienia okazuje się że przesyłanie wiadomości przez GCM nie nadaje się w naszym przypadku.
 
 \subsubsection{Restful HTTP}
-Rozwiązanie to miałoby się opierać o implmentację serwisu na urządzeniu, którym co określony okres czasu wysyłałby zapytanie do serwera o nowe wiadomości. Problemem w tym przypadku jest odstęp czasu co jaki serwis miałby wysyłać zapytanie. W przypadku 15 min mogłoby to oznaczać bardzo dużą ilość zgromadzonych w kolejce wiadomości oraz utratę znaczenia tych najstarszych. Gdyby skrócić ten okres, mogłoby się okazać, że taki serwis jest byłby tak prądożerny że korzystanie z urządzenia byłoby utrudnione.
+Rozwiązanie to miałoby się opierać o implmentację serwisu na urządzeniu, którym co określony okres czasu wysyłałby zapytanie do serwera o nowe wiadomości. Problemem w tym przypadku jest odstęp czasu co jaki serwis miałby wysyłać zapytanie. W przypadku 15 min mogłoby to oznaczać bardzo dużą ilość zgromadzonych w kolejce wiadomości oraz utratę znaczenia tych najstarszych. Gdyby skrócić ten okres, mogłoby się okazać, że taki serwis byłby tak prądożerny, że korzystanie z urządzenia byłoby utrudnione.
 
 %------------------------------------------------
 
 \section{XMPP}
+XMPP to protokuł zorientowany w celu przesyłania wiadomości w formacie XML. Został zaprojektowany tak, żeby być jak najbardziej rozszerzalnym, a jednym z jego możliwych zastosowań to systemu typu publish-subscribe. Wśród wybranych rozwiązań jest to najbardziej dojrzały standard, gdyż był stosowany już o 1999. Wczasie swojej historii używały go takie firmy jak Jabber czy Google do swojego komunikatora Google Talk lub Microsoft w Skype.
+\\ Struktura sieci XMPP jest podobna do e-mail, gdzie mamy rozproszoną strukturę serwerów i każdy może stworzyć swój własny serwis. Standard posiada wsparcie dla szyfrowania wiadomości, a wsparcie dla XML powoduje, że można wykorzystać w nim takie technologie jak SOAP czy EDI.
+\\ Do testów protokołu na platformie Android użyliśmy implementacji XMPP o nazwie Smack.
 
 \section{MQTT}
 MQTT to protokuł do komunikacji publish-subscribe opraty na TCP/IP. Jego twórcy twierdzą, że został stworzony aby umożliwić komunikację przy ograniczonej przepustowości łącza, pisząc mało kodu oraz zużywając mało energii. Cały protokuł oparty jest o centralnego brokera, który rozsyła wiadomości publikowane na jakiś temat do wszystkich zainteresowanych czytelników. Standard został opracowany przez IBM i to właśnie z implementacji tej firmy korzystaliśmy w czasie opracowywania tego projektu.
