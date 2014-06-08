@@ -32,7 +32,7 @@
 \pagestyle{fancy} % All pages have headers and footers
 \fancyhead{} % Blank out the default header
 \fancyfoot{} % Blank out the default footer
-\fancyhead[C]{Running title $\bullet$ November 2012 $\bullet$ Vol. XXI, No. 1} % Custom header text
+\fancyhead[C]{Notyfikacje w systemie Android $\bullet$ Czerwiec 2014} % Custom header text
 \fancyfoot[RO,LE]{\thepage} % Custom footer text
 
 %----------------------------------------------------------------------------------------
@@ -125,6 +125,8 @@ MQTT to protokuł do komunikacji publish-subscribe opraty na TCP/IP. Jego twórc
 \\ MQTT używany był już wiele razy na systemie Android. Pierwsza implemetacja GCM, czyli C2D była oparta o właśnie ten protokuł, a Facebook do tej pory korzysta z niego do wysyłania notyfikacji w swojej aplikacji.
 
 \section{CoAP}
+CoAP to protokuł, którego zadaniem ma być umożliwienie porozumiewanie się małych urządzeń takich jak sensory, switche, itp. Został zaprojektowany w oparciu o HTTP w celu uproszenia architektury i wsparcia dla multicastu. Wiadomości są przesyłane w formacie binarnym, a ich rozmiar jest ograniczony przez maksymalna długość datagramu. Standard jest stosunkowo nowy, nie posiada jeszcze swojego RFC, a ilość implementacji jest ograniczona.
+\\Do testów tego protokołu wykorzystaliśmy implementację o nazwie jCoAP.
 
 \section{AMQP}
 AMQP to protokuł przesyłający dane w formacie binarnym, zaprojektowany w celu obsługi jak największej ilości możliwych zastosowań. Posiada możliwość wyboru gwarancji dostarczenia widomości (at-most-once, at-least-once lub exactly-once) oraz zapawnia interfejs do szyfrowania wiadomości.
@@ -152,11 +154,29 @@ Richard & Miles & $2$ \\
 %	REFERENCE LIST
 %----------------------------------------------------------------------------------------
 
-\begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
+\begin{thebibliography}{99}
 
 \bibitem[Android Developer Central - GCM Advanced Topics]{}
 http://developer.android.com/google/gcm/adv.html
- 
+
+\bibitem[XMPP]{}
+http://xmpp.org/
+
+\bibitem[AMQP]{}
+http://www.amqp.org/
+
+\bibitem[RabbitMQ]{}
+http://www.rabbitmq.com/
+
+\bibitem[MQTT]{}
+http://mqtt.org/
+
+\bibitem[Tokudu - How to Implement Push Notifications for Android]{}
+http://tokudu.com/post/50024574938/how-to-implement-push-notifications-for-android
+
+\bibitem[ServerDensity - Android push notifications]{}
+https://blog.serverdensity.com/android-push-notifications-tutorial/
+
 \end{thebibliography}
 
 %----------------------------------------------------------------------------------------
