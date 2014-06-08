@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="host" />
+    <item type="id" name="port" />
+    <item type="id" name="service" />
+    <item type="id" name="userid" />
+    <item type="id" name="password" />
+</resources>
