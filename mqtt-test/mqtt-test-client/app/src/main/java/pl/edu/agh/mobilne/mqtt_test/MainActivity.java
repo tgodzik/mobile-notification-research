@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.tokudu.demo.R;
-
 public class MainActivity extends Activity {
 
     /**
@@ -56,7 +54,7 @@ public class MainActivity extends Activity {
         total = (EditText) findViewById(R.id.totalField);
 
         //Create the client
-        client = new MqttTestClient("10.0.2.2", 1884, this);
+        client = new MqttTestClient("192.168.2.10", 1884, this);
 
         //register for messages
         client.setMessageHandler(new TestClient.MessageHandler() {
@@ -64,7 +62,7 @@ public class MainActivity extends Activity {
                 Statistics.addMessage(message);
                 msgNum.setText("" + Statistics.messagesNumber);
                 delay.setText("" + Statistics.averageDelay);
-                delay.setText("" + (Statistics.lastMessage - Statistics.firstMessage));
+                total.setText("" + (Statistics.lastMessage - Statistics.firstMessage));
             }
         });
 

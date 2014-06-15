@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
         total = (EditText) findViewById(R.id.totalField);
 
         //Create the client
-        client = new MessageConsumer("10.0.2.2", getApplicationContext());
+        client = new MessageConsumer("192.168.2.10", getApplicationContext());
 
         //register for messages
         client.setMessageHandler(new TestClient.MessageHandler() {
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
                 Statistics.addMessage(message);
                 msgNum.setText("" + Statistics.messagesNumber);
                 delay.setText("" + Statistics.averageDelay);
-                delay.setText("" + (Statistics.lastMessage - Statistics.firstMessage));
+                total.setText("" + (Statistics.lastMessage - Statistics.firstMessage));
             }
         });
 

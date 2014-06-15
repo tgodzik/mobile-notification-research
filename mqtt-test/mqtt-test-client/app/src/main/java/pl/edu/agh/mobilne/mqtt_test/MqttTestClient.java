@@ -33,7 +33,7 @@ public class MqttTestClient implements TestClient {
         }
     };
 
-    private String mqttHost = "10.0.2.2";
+    private String mqttHost = "192.168.2.10";
     private int mqttPort = 1884;
 
     // settings

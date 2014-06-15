@@ -9,11 +9,11 @@ public class Statistics {
 
     public static double addMessage(String message) {
 
-        lastMessage = System.currentTimeMillis();
         long msgTime = Long.parseLong(message);
+        lastMessage = System.currentTimeMillis();
 
         if (firstMessage == 0l)
-            firstMessage = msgTime;
+            firstMessage = System.currentTimeMillis();
 
         long newDelay = lastMessage - msgTime;
 

@@ -19,7 +19,7 @@ class SendMsgBot(sleekxmpp.ClientXMPP):
         self.send_presence()
         self.get_roster()
 
-        while True:
+        for i in range(0,400):
             self.send_message(mto=self.recipient, mbody=str(int(round(time.time() * 1000))), mtype='chat')
 
         self.disconnect(wait=True)
