@@ -12,7 +12,7 @@ num = 100
 for i in range(0, num):
     send = str(long(round(time.time() * 1000)))
     channel.basic_publish(exchange='',
-                          routing_key='hello',
+                          routing_key='test',
                           body=send)
 
 #print " [x] Sent" + send

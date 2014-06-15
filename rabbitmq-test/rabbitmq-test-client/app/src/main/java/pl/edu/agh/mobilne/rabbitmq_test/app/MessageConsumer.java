@@ -76,7 +76,7 @@ public class MessageConsumer implements TestClient {
             connectionFactory.setHost(serverPath);
             connection = connectionFactory.newConnection();
             channel = connection.createChannel();
-            channel.queueDeclare("hello", false, false, false, null);
+            channel.queueDeclare("test", false, false, false, null);
             return true;
         }
         catch (Exception e)
