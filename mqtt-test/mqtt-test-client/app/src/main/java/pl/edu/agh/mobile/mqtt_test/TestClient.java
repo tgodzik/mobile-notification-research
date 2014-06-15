@@ -1,4 +1,4 @@
-package com.tokudu.demo;
+package pl.edu.agh.mobile.mqtt_test;
 
 
 public interface TestClient {

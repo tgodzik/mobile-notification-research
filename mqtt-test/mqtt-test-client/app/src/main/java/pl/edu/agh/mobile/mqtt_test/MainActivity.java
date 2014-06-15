@@ -1,10 +1,12 @@
-package com.tokudu.demo;
+package pl.edu.agh.mobile.mqtt_test;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.tokudu.demo.R;
 
 public class MainActivity extends Activity {
 

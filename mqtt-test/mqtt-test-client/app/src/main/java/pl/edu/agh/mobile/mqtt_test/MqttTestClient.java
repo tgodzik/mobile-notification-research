@@ -1,6 +1,4 @@
-package com.tokudu.demo;
-
-import java.io.IOException;
+package pl.edu.agh.mobile.mqtt_test;
 
 import com.ibm.mqtt.IMqttClient;
 import com.ibm.mqtt.MqttClient;
