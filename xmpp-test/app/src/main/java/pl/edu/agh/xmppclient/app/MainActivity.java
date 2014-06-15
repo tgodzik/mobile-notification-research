@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
         msgNum = (EditText) findViewById(R.id.msgNumField);
 
         //Create the client
-        client = new MessageConsumer("192.168.2.10");
+        client = new MessageConsumer("192.168.2.10", getApplicationContext());
 
         //register for messages
         client.setMessageHandler(new TestClient.MessageHandler() {

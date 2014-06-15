@@ -1,10 +1,11 @@
 package pl.edu.agh.xmppclient.app;
 
+import android.content.Context;
 import android.os.Handler;
 
-import org.apache.harmony.javax.security.sasl.SaslException;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackAndroid;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
@@ -23,7 +24,7 @@ import java.io.IOException;
 public class MessageConsumer implements TestClient {
 
     String host = "192.168.2.10";
-    String port = "5222";
+    String port = "5225";
     String username = "admin";
     String password = "ala123";
     private String lastMessage;
@@ -52,8 +53,9 @@ public class MessageConsumer implements TestClient {
         }
     };
 
-    public MessageConsumer(String server) {
+    public MessageConsumer(String server, Context ctx) {
         host = server;
+        SmackAndroid.init(ctx);
     }
 
     /**
@@ -73,17 +75,29 @@ public class MessageConsumer implements TestClient {
     public boolean create() {
         try {
             consumeHandler.post(consumeRunner);
-            System.out.println(host + port);
             connectionConfig = new ConnectionConfiguration(host, Integer.parseInt(port));
+            connectionConfig.setDebuggerEnabled(true);
             connection = new XMPPTCPConnection(connectionConfig);
             connection.connect();
             connection.login(username, password);
             Presence presence = new Presence(Presence.Type.available);
             connection.sendPacket(presence);
             isRunning = true;
+            if (connection != null) {
+                PacketFilter filter = new MessageTypeFilter(Message.Type.chat);
+                connection.addPacketListener(new PacketListener() {
+                    public void processPacket(Packet packet) {
+                        Message message = (Message) packet;
+                        if (message.getBody() != null) {
+                            String fromName = StringUtils.parseBareAddress(message.getFrom());
+                            lastMessage = message.getBody();
+                            messageHandler.post(returnMessage);
+                        }
+                    }
+                }, filter);
+            }
         } catch (SmackException.ConnectionException e) {
             e.printStackTrace();
-            System.err.println(e.getFailedAddresses());
             return false;
         } catch (XMPPException e) {
             e.printStackTrace();
@@ -100,27 +114,11 @@ public class MessageConsumer implements TestClient {
         }
         return true;
     }
-//    {access, c2s}, {shaper, c2s_shaper},
-//    {max_stanza_size, 65536}, starttls,
-//    {certfile,
-//            "/etc/ejabberd/ejabberd.pem"}
+
     private void consume() {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                if (connection != null) {
-                    PacketFilter filter = new MessageTypeFilter(Message.Type.chat);
-                    connection.addPacketListener(new PacketListener() {
-                        public void processPacket(Packet packet) {
-                            Message message = (Message) packet;
-                            if (message.getBody() != null) {
-                                String fromName = StringUtils.parseBareAddress(message.getFrom());
-                                lastMessage = message.getBody();
-                                messageHandler.post(returnMessage);
-                            }
-                        }
-                    }, filter);
-                }
             }
         };
         thread.start();
