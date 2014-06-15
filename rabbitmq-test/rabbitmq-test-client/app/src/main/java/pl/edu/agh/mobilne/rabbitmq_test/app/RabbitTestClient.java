@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * Consumes messages from a RabbitMQ broker
  */
-public class MessageConsumer implements TestClient {
+public class RabbitTestClient implements TestClient {
 
     public String serverPath;
     public String queueName;
@@ -45,7 +45,7 @@ public class MessageConsumer implements TestClient {
     };
 
 
-    public MessageConsumer(String server, String queue) {
+    public RabbitTestClient(String server, String queue) {
         serverPath = server;
         queueName = queue;
     }

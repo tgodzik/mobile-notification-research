@@ -1,10 +1,9 @@
-package pl.edu.agh.mobilne.coaptest.app;
+package pl.edu.agh.mobilne.coap_test;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -44,15 +43,15 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(pl.edu.agh.mobilne.coap_test.app.R.layout.activity_main);
 
         //The output TextView we'll use to display messages
-        delay = (EditText) findViewById(R.id.delayField);
+        delay = (EditText) findViewById(pl.edu.agh.mobilne.coap_test.app.R.id.delayField);
 
-        msgNum = (EditText) findViewById(R.id.msgNumField);
+        msgNum = (EditText) findViewById(pl.edu.agh.mobilne.coap_test.app.R.id.msgNumField);
 
         //Create the client
-        client = new BasicCoapClient("10.0.2.2", 5683);
+        client = new CoapTestClient("10.0.2.2", 5683);
 
         //register for messages
         client.setMessageHandler(new TestClient.MessageHandler() {
