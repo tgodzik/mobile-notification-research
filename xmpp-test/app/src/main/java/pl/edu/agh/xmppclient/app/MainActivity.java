@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 public class MainActivity extends Activity {
 
     /**
@@ -18,6 +19,7 @@ public class MainActivity extends Activity {
      */
     private EditText delay;
     private EditText msgNum;
+    private EditText total;
 
     private class EstablishConnectionTask extends AsyncTask<TestClient, Integer, Boolean> {
 
@@ -43,15 +45,17 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_client);
+        setContentView(R.layout.activity_main);
 
         //The output TextView we'll use to display messages
         delay = (EditText) findViewById(R.id.delayField);
 
         msgNum = (EditText) findViewById(R.id.msgNumField);
 
+        total = (EditText) findViewById(R.id.totalField);
+
         //Create the client
-        client = new MessageConsumer("192.168.2.10", getApplicationContext());
+        client = new MessageConsumer("10.0.2.2", getApplicationContext());
 
         //register for messages
         client.setMessageHandler(new TestClient.MessageHandler() {
@@ -59,6 +63,7 @@ public class MainActivity extends Activity {
                 Statistics.addMessage(message);
                 msgNum.setText("" + Statistics.messagesNumber);
                 delay.setText("" + Statistics.averageDelay);
+                delay.setText("" + (Statistics.lastMessage - Statistics.firstMessage));
             }
         });
 
