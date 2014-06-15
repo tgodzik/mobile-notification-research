@@ -1,4 +1,4 @@
-package pl.edu.agh.mobile.mqtt_test;
+package pl.edu.agh.mobilne.mqtt_test;
 
 import android.app.Activity;
 import android.os.AsyncTask;

@@ -1,4 +1,5 @@
-package pl.edu.agh.mobile.mqtt_test;
+package pl.edu.agh.mobilne.coap_test;
+
 
 public class Statistics {
 

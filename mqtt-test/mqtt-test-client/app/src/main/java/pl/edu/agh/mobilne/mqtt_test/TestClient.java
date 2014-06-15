@@ -1,4 +1,4 @@
-package pl.edu.agh.mobilne.coaptest.app;
+package pl.edu.agh.mobilne.mqtt_test;
 
 
 public interface TestClient {
@@ -10,8 +10,7 @@ public interface TestClient {
     void dispose();
 
     // An interface to be implemented by an object that is interested in messages(listener)
-    public interface MessageHandler {
+    public static interface MessageHandler {
         public void onReceiveMessage(String message);
     }
 }
-

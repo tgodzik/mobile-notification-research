@@ -1,4 +1,4 @@
-package pl.edu.agh.mobilne.coaptest.app;
+package pl.edu.agh.mobilne.coap_test;
 
 
 import android.os.Handler;
@@ -15,7 +15,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 
-public class BasicCoapClient implements CoapClient, TestClient {
+public class CoapTestClient implements CoapClient, TestClient {
 
     private String SERVER_ADDRESS = "10.0.2.2";
     private int PORT = 5683;
@@ -32,7 +32,7 @@ public class BasicCoapClient implements CoapClient, TestClient {
         }
     };
 
-    public BasicCoapClient(String serverName, int port) {
+    public CoapTestClient(String serverName, int port) {
         this.SERVER_ADDRESS = serverName;
         this.PORT = port;
     }

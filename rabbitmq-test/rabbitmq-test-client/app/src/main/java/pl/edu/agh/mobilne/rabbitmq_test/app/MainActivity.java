@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -52,7 +51,7 @@ public class MainActivity extends Activity {
         msgNum = (EditText) findViewById(R.id.msgNumField);
 
         //Create the client
-        client = new MessageConsumer("10.0.2.2", "hello");
+        client = new RabbitTestClient("10.0.2.2", "hello");
 
         //register for messages
         client.setMessageHandler(new TestClient.MessageHandler() {
