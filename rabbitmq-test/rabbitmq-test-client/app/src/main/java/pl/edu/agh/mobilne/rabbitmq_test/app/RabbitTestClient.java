@@ -121,7 +121,7 @@ public class RabbitTestClient implements TestClient {
                         delivery = consumer.nextDelivery();
                         lastMessage = new String(delivery.getBody());
                         messageHandler.post(returnMessage);
-                    } catch (InterruptedException ie) {
+                    } catch (Exception ie) {
                     }
                 }
             }
