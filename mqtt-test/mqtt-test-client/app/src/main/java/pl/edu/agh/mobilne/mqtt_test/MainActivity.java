@@ -20,6 +20,7 @@ public class MainActivity extends Activity {
      */
     private EditText delay;
     private EditText msgNum;
+    private EditText total;
 
     private class EstablishConnectionTask extends AsyncTask<TestClient, Integer, Boolean> {
 
@@ -52,6 +53,8 @@ public class MainActivity extends Activity {
 
         msgNum = (EditText) findViewById(R.id.msgNumField);
 
+        total = (EditText) findViewById(R.id.totalField);
+
         //Create the client
         client = new MqttTestClient("10.0.2.2", 1884, this);
 
@@ -61,6 +64,7 @@ public class MainActivity extends Activity {
                 Statistics.addMessage(message);
                 msgNum.setText("" + Statistics.messagesNumber);
                 delay.setText("" + Statistics.averageDelay);
+                delay.setText("" + (Statistics.lastMessage - Statistics.firstMessage));
             }
         });
 
