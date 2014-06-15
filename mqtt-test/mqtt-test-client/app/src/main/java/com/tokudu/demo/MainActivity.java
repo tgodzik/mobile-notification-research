@@ -1,9 +1,5 @@
 package com.tokudu.demo;
 
-/**
- * Created by tomasz on 15.06.14.
- */
-
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -55,7 +51,7 @@ public class MainActivity extends Activity {
         msgNum = (EditText) findViewById(R.id.msgNumField);
 
         //Create the client
-        client = new PushActivity(this);
+        client = new MqttTestClient("10.0.2.2", 1884, this);
 
         //register for messages
         client.setMessageHandler(new TestClient.MessageHandler() {
