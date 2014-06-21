@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
             public void onReceiveMessage(String message) {
                 Statistics.addMessage(message);
                 msgNum.setText("" + Statistics.messagesNumber);
-                delay.setText("" + Statistics.averageDelay);
+                delay.setText("" + new Double(Statistics.averageDelay).intValue());
                 total.setText("" + (Statistics.lastMessage - Statistics.firstMessage));
             }
         });
