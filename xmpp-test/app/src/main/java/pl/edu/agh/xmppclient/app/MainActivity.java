@@ -19,6 +19,7 @@ public class MainActivity extends Activity {
      */
     private EditText delay;
     private EditText msgNum;
+    private EditText order;
     private EditText total;
 
     private class EstablishConnectionTask extends AsyncTask<TestClient, Integer, Boolean> {
@@ -54,6 +55,8 @@ public class MainActivity extends Activity {
 
         total = (EditText) findViewById(R.id.totalField);
 
+        order = (EditText) findViewById(R.id.orderField);
+
         //Create the client
         client = new MessageConsumer("192.168.2.10", getApplicationContext());
 
@@ -62,6 +65,7 @@ public class MainActivity extends Activity {
             public void onReceiveMessage(String message) {
                 Statistics.addMessage(message);
                 msgNum.setText("" + Statistics.messagesNumber);
+                order.setText("" + Statistics.order);
                 delay.setText("" + Double.toString(Statistics.averageDelay));
                 total.setText("" + (Statistics.lastMessage - Statistics.firstMessage));
             }
