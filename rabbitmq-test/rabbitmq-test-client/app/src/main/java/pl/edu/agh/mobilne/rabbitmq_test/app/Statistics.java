@@ -6,6 +6,8 @@ public class Statistics {
     public static double averageDelay = 0.0;
     public static long firstMessage = 0l;
     public static long lastMessage = 0l;
+    public static boolean order = true;
+    public static long oldMsg = 0l;
 
     public static double addMessage(String message) {
 
@@ -14,7 +16,12 @@ public class Statistics {
         if (firstMessage == 0l)
             firstMessage = lastMessage;
 
-        long newDelay = lastMessage - Long.parseLong(message);
+        long newMsg = Long.parseLong(message);
+
+        long newDelay = lastMessage -  newMsg;
+
+        order = order & (newMsg > oldMsg);
+        oldMsg = newMsg;
 
         double num = (double) messagesNumber;
         averageDelay = (num / (num + 1.0)) * averageDelay + ((double) newDelay) / (num + 1);

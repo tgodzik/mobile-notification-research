@@ -6,7 +6,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
     host='localhost'))
 channel = connection.channel()
 
-channel.queue_declare(queue='hello')
+channel.queue_declare(queue='test')
 
 num = 100
 for i in range(0, num):
