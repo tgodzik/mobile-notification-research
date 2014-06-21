@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
         order = (EditText) findViewById(R.id.orderField);
 
         //Create the client
-//        client = new RabbitTestClient("10.0.2.2", "test");
+        // client = new RabbitTestClient("10.0.2.2", "test");
 
         //Create the client
         client = new RabbitTestClient("192.168.2.8", "test");
@@ -86,6 +86,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        Statistics.reset();
         client.dispose();
     }
 }

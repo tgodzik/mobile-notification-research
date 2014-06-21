@@ -17,7 +17,8 @@ public class Statistics {
         if (firstMessage == 0l)
             firstMessage = System.currentTimeMillis();
 
-        order = order & (msgTime > oldMsg);
+        System.out.println("old : " + oldMsg + "  new: " + msgTime);
+        order = order & (msgTime >= oldMsg);
         oldMsg = msgTime;
 
         long newDelay = lastMessage - msgTime;
@@ -27,6 +28,15 @@ public class Statistics {
 
         messagesNumber++;
         return averageDelay;
+    }
+
+    public static void reset() {
+        messagesNumber = 0;
+        averageDelay = 0.0;
+        firstMessage = 0l;
+        lastMessage = 0l;
+        order = true;
+        oldMsg = 0l;
     }
 
 }
