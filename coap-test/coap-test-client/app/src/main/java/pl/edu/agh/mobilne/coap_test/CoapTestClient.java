@@ -69,7 +69,6 @@ public class CoapTestClient implements CoapClient, TestClient {
         return true;
     }
 
-
     @Override
     public void dispose() {
         clientChannel.close();
