@@ -18,6 +18,7 @@ public class MainActivity extends Activity {
      */
     private EditText delay;
     private EditText msgNum;
+    private EditText order;
     private EditText total;
 
     private class EstablishConnectionTask extends AsyncTask<TestClient, Integer, Boolean> {
@@ -53,6 +54,11 @@ public class MainActivity extends Activity {
 
         total = (EditText) findViewById(R.id.totalField);
 
+        order = (EditText) findViewById(R.id.orderField);
+
+        //Create the client
+        // client = new RabbitTestClient("10.0.2.2", "test");
+
         //Create the client
         client = new RabbitTestClient("192.168.2.8", "test");
 
@@ -62,7 +68,10 @@ public class MainActivity extends Activity {
                 Statistics.addMessage(message);
                 msgNum.setText("" + Statistics.messagesNumber);
                 delay.setText("" + Statistics.averageDelay);
+
+                order.setText("" + Statistics.order);
                 total.setText("" + (Statistics.lastMessage - Statistics.firstMessage));
+
             }
         });
 
@@ -77,6 +86,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        Statistics.reset();
         client.dispose();
     }
 }
