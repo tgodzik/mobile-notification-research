@@ -45,7 +45,7 @@ public class MqttTestClient implements TestClient {
 
     // connectivity manager to determining, when the phone loses connection
     private ConnectivityManager connectionManager;
-    private boolean isRunning;
+    private boolean isRunning = false;
 
     // Preferences instance
     private SharedPreferences preferences;
@@ -82,8 +82,8 @@ public class MqttTestClient implements TestClient {
         // Get instances of preferences, connectivity manager and notification manager
         preferences = parent.getSharedPreferences(tag, Context.MODE_PRIVATE);
         connectionManager = (ConnectivityManager) parent.getSystemService(Context.CONNECTIVITY_SERVICE);
+        connect();
         handleCrashedService();
-
 
         return true;
     }
@@ -130,7 +130,7 @@ public class MqttTestClient implements TestClient {
      * @return whether it was started
      */
     private boolean wasStarted() {
-        return preferences.getBoolean(PREF_STARTED, false);
+        return isRunning;
     }
 
     /**
@@ -139,7 +139,6 @@ public class MqttTestClient implements TestClient {
      * @param running is it running
      */
     private void setRunning(boolean running) {
-        preferences.edit().putBoolean(PREF_STARTED, running).commit();
         this.isRunning = running;
     }
 
@@ -179,8 +178,8 @@ public class MqttTestClient implements TestClient {
     private synchronized void connect() {
         log("Connecting...");
         // fetch the device ID from the preferences.
-        String deviceID = preferences.getString(PREF_DEVICE_ID, null);
-        if (deviceID == null) {
+        String deviceID = "ala123";
+        if (isRunning) {
             log("Device ID not found.");
         } else {
             try {
@@ -221,7 +220,7 @@ public class MqttTestClient implements TestClient {
             String mqttConnSpec = "tcp://" + brokerHostName + "@" + mqttPort;
             // Create the client and connect
             mqttClient = MqttClient.createMqttClient(mqttConnSpec, MQTT_PERSISTENCE);
-            String clientID = MQTT_CLIENT_ID + "/" + preferences.getString(PREF_DEVICE_ID, "");
+            String clientID = MQTT_CLIENT_ID + "/" + "ala123";
 
             short MQTT_KEEP_ALIVE = 60 * 15;
             mqttClient.connect(clientID, true, MQTT_KEEP_ALIVE);

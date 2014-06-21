@@ -11,17 +11,16 @@ public class Statistics {
 
     public static double addMessage(String message) {
 
+        long msgTime = Long.parseLong(message);
         lastMessage = System.currentTimeMillis();
 
         if (firstMessage == 0l)
-            firstMessage = lastMessage;
+            firstMessage = System.currentTimeMillis();
 
-        long newMsg = Long.parseLong(message);
+        order = order & (msgTime > oldMsg);
+        oldMsg = msgTime;
 
-        long newDelay = lastMessage -  newMsg;
-
-        order = order & (newMsg > oldMsg);
-        oldMsg = newMsg;
+        long newDelay = lastMessage - msgTime;
 
         double num = (double) messagesNumber;
         averageDelay = (num / (num + 1.0)) * averageDelay + ((double) newDelay) / (num + 1);
