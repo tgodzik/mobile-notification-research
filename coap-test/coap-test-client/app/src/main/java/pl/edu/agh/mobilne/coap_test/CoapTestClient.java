@@ -29,6 +29,7 @@ public class CoapTestClient implements TestClient {
 
 
     private String SERVER_ADDRESS = "10.0.2.2";
+    private int NUMBER_OF_PARALLEL_REQUESTS = 100;
     private int PORT = 5683;
     private MessageHandler messageListener;
     private String lastMessage = "no msg";
@@ -82,10 +83,14 @@ public class CoapTestClient implements TestClient {
     public boolean create() {
         try {
             client = new CoapClientApplication();
-            URI targetURI = new URI("coap://" + SERVER_ADDRESS + "/observable/utc-time");
-            CoapRequest coapRequest = new CoapRequest(MsgType.CON, Code.GET, targetURI);
-            coapRequest.setObserveOptionRequest();
-            client.writeCoapRequest(coapRequest, new SimpleResponseProcessor());
+
+            for (int i = 1; i <= NUMBER_OF_PARALLEL_REQUESTS; i++) {
+                URI targetURI = new URI("coap://" + SERVER_ADDRESS + "/observable/utc-time");
+                CoapRequest coapRequest = new CoapRequest(MsgType.CON, Code.GET, targetURI);
+                // this option makes server send notifications
+                // coapRequest.setObserveOptionRequest();
+                client.writeCoapRequest(coapRequest, new SimpleResponseProcessor());
+            }
 
 
         } catch (InvalidOptionException e) {

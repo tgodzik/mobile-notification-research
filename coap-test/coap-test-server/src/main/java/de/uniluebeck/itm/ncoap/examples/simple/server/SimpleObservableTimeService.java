@@ -24,8 +24,7 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
 
     private Logger log = Logger.getLogger(SimpleObservableTimeService.class.getName());
 
-    public static int RESOURCE_UPDATE_INTERVAL_MILLIS = 125;
-    private boolean stopper = false;
+    public static int RESOURCE_UPDATE_INTERVAL_MILLIS = 1000;
 
     public SimpleObservableTimeService(String path) {
         super(path, System.currentTimeMillis());
@@ -38,27 +37,13 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
         schedulePeriodicResourceUpdate();
     }
 
+
     private void schedulePeriodicResourceUpdate() {
+
         getScheduledExecutorService().scheduleAtFixedRate(new Runnable() {
-
-            int maxtime = 0;
-
             @Override
             public void run() {
                 setResourceStatus(System.currentTimeMillis());
-                log.info("New status of resource " + getPath() + ": " + getResourceStatus());
-
-                if (stopper) {
-                    maxtime++;
-
-                }
-
-
-                if (maxtime == 100 && stopper) {
-                    System.exit(0);
-
-                }
-
             }
         }, 0, RESOURCE_UPDATE_INTERVAL_MILLIS, TimeUnit.MILLISECONDS);
     }
@@ -66,11 +51,10 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
     @Override
     public void processCoapRequest(SettableFuture<CoapResponse> responseFuture, CoapRequest coapRequest,
                                    InetSocketAddress remoteAddress) {
-        stopper = true;
         try {
-            if (coapRequest.getCode() == Code.GET)
+            if (coapRequest.getCode() == Code.GET) {
                 responseFuture.set(processGet(coapRequest));
-            else
+            } else
                 responseFuture.set(new CoapResponse(Code.METHOD_NOT_ALLOWED_405));
         } catch (Exception e) {
             log.error("Exception", e);

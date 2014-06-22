@@ -11,23 +11,24 @@ public class Statistics {
     public static long oldMsg = 0l;
 
     public static double addMessage(String message) {
+        if (!message.equals("")) {
+            long msgTime = Long.parseLong(message);
+            lastMessage = System.currentTimeMillis();
 
-        long msgTime = Long.parseLong(message);
-        lastMessage = System.currentTimeMillis();
+            if (firstMessage == 0l)
+                firstMessage = System.currentTimeMillis();
 
-        if (firstMessage == 0l)
-            firstMessage = System.currentTimeMillis();
+            System.out.println("old : " + oldMsg + " new: " + msgTime);
+            order = order & (msgTime >= oldMsg);
+            oldMsg = msgTime;
 
-        System.out.println("old : " + oldMsg + " new: " + msgTime);
-        order = order & (msgTime >= oldMsg);
-        oldMsg = msgTime;
+            long newDelay = lastMessage - msgTime;
 
-        long newDelay = lastMessage - msgTime;
+            double num = (double) messagesNumber;
+            averageDelay = (num / (num + 1.0)) * averageDelay + ((double) newDelay) / (num + 1);
 
-        double num = (double) messagesNumber;
-        averageDelay = (num / (num + 1.0)) * averageDelay + ((double) newDelay) / (num + 1);
-
-        messagesNumber++;
+            messagesNumber++;
+        }
         return averageDelay;
     }
 

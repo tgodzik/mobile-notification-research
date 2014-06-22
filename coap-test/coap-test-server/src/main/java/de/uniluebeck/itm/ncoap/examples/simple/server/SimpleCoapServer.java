@@ -30,12 +30,6 @@ import org.apache.log4j.*;
  * This is a very simple server application providing a .well-known/core resource and some resources, i.e.
  * <ul>
  *     <li>
- *         <code>/not-observable/not-delayed</code>: an instance of {@link SimpleNotObservableWebservice}
- *     </li>
- *     <li>
- *         <code>/not-observable/delayed-by-3sec</code> an instance of {@link SimpleNotObservableWebServiceWithDelay}
- *     </li>
- *     <li>
  *         <code>/observable/utc-time</code> an instance of {@link SimpleObservableTimeService}
  *     </li>
  * </ul>
@@ -56,8 +50,8 @@ public class SimpleCoapServer {
         appender.addAppender(new ConsoleAppender(patternLayout));
         Logger.getRootLogger().addAppender(appender);
 
-        Logger.getRootLogger().setLevel(Level.INFO);
-        Logger.getLogger("de.uniluebeck.itm.ncoap.examples.simple.server").setLevel(Level.DEBUG);
+        Logger.getRootLogger().setLevel(Level.OFF);
+        Logger.getLogger("de.uniluebeck.itm.ncoap.examples.simple.server").setLevel(Level.OFF);
     }
 
     /**
@@ -69,12 +63,10 @@ public class SimpleCoapServer {
 
         //start the server
         CoapServerApplication server = new CoapServerApplication();
-        log.info("Server started and listening on port " + server.getServerPort());
 
-        //Time service
+        //add time service
         SimpleObservableTimeService timeService = new SimpleObservableTimeService("/observable/utc-time");
         server.registerService(timeService);
 
-        //That's it!
     }
 }
