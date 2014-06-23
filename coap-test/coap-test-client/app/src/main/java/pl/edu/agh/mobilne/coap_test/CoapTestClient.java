@@ -3,29 +3,65 @@ package pl.edu.agh.mobilne.coap_test;
 
 import android.os.Handler;
 
-import org.ws4d.coap.connection.BasicCoapChannelManager;
-import org.ws4d.coap.interfaces.CoapChannelManager;
-import org.ws4d.coap.interfaces.CoapClient;
-import org.ws4d.coap.interfaces.CoapClientChannel;
-import org.ws4d.coap.interfaces.CoapRequest;
-import org.ws4d.coap.interfaces.CoapResponse;
-import org.ws4d.coap.messages.CoapRequestCode;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import org.apache.log4j.Logger;
+import org.jboss.netty.buffer.ChannelBuffer;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import de.uniluebeck.itm.ncoap.application.client.CoapClientApplication;
+import de.uniluebeck.itm.ncoap.application.client.CoapResponseProcessor;
+import de.uniluebeck.itm.ncoap.communication.reliability.outgoing.EmptyAcknowledgementProcessor;
+import de.uniluebeck.itm.ncoap.communication.reliability.outgoing.InternalEmptyAcknowledgementReceivedMessage;
+import de.uniluebeck.itm.ncoap.communication.reliability.outgoing.InternalRetransmissionTimeoutMessage;
+import de.uniluebeck.itm.ncoap.communication.reliability.outgoing.RetransmissionTimeoutProcessor;
+import de.uniluebeck.itm.ncoap.message.CoapRequest;
+import de.uniluebeck.itm.ncoap.message.CoapResponse;
+import de.uniluebeck.itm.ncoap.message.InvalidMessageException;
+import de.uniluebeck.itm.ncoap.message.header.Code;
+import de.uniluebeck.itm.ncoap.message.header.MsgType;
+import de.uniluebeck.itm.ncoap.message.options.InvalidOptionException;
+import de.uniluebeck.itm.ncoap.message.options.ToManyOptionsException;
 
 
-public class CoapTestClient implements CoapClient, TestClient {
+public class CoapTestClient implements TestClient {
+
 
     private String SERVER_ADDRESS = "10.0.2.2";
+    private int NUMBER_OF_PARALLEL_REQUESTS = 100;
     private int PORT = 5683;
-    CoapChannelManager channelManager = null;
-    CoapClientChannel clientChannel = null;
     private MessageHandler messageListener;
-
     private String lastMessage = "no msg";
-
+    private CoapClientApplication client;
     private Handler messageHandler = new Handler();
+
+    public class SimpleResponseProcessor implements CoapResponseProcessor, EmptyAcknowledgementProcessor,
+            RetransmissionTimeoutProcessor {
+
+        private Logger log = Logger.getLogger(this.getClass().getName());
+
+        @Override
+        public void processCoapResponse(CoapResponse coapResponse) {
+            ChannelBuffer buffer = coapResponse.getPayload();
+            byte[] readable = new byte[buffer.readableBytes()];
+            buffer.toByteBuffer().get(readable, buffer.readerIndex(), buffer.readableBytes());
+            lastMessage = new String(readable);
+            messageHandler.post(returnMessage);
+        }
+
+        @Override
+        public void processEmptyAcknowledgement(InternalEmptyAcknowledgementReceivedMessage message) {
+            log.info("Received empty ACK: " + message);
+        }
+
+        @Override
+        public void processRetransmissionTimeout(InternalRetransmissionTimeoutMessage timeoutMessage) {
+            log.info("Transmission timed out: " + timeoutMessage);
+        }
+    }
+
+
     final Runnable returnMessage = new Runnable() {
         public void run() {
             messageListener.onReceiveMessage(lastMessage);
@@ -37,17 +73,6 @@ public class CoapTestClient implements CoapClient, TestClient {
         this.PORT = port;
     }
 
-    @Override
-    public void onConnectionFailed(CoapClientChannel channel, boolean notReachable, boolean resetByServer) {
-        System.out.println("Connection Failed");
-    }
-
-    @Override
-    public void onResponse(CoapClientChannel channel, CoapResponse response) {
-        System.out.println("Received response");
-        lastMessage = new String(response.getPayload());
-        messageHandler.post(returnMessage);
-    }
 
     @Override
     public void setMessageHandler(MessageHandler handler) {
@@ -57,13 +82,24 @@ public class CoapTestClient implements CoapClient, TestClient {
     @Override
     public boolean create() {
         try {
-            channelManager = BasicCoapChannelManager.getInstance();
-            clientChannel = channelManager.connect(this, InetAddress.getByName(SERVER_ADDRESS), PORT);
-            CoapRequest coapRequest = clientChannel.createRequest(true, CoapRequestCode.GET);
-            clientChannel.sendMessage(coapRequest);
-            System.out.println("Sent Request");
+            client = new CoapClientApplication();
 
-        } catch (UnknownHostException e) {
+            for (int i = 1; i <= NUMBER_OF_PARALLEL_REQUESTS; i++) {
+                URI targetURI = new URI("coap://" + SERVER_ADDRESS + "/observable/utc-time");
+                CoapRequest coapRequest = new CoapRequest(MsgType.CON, Code.GET, targetURI);
+                // this option makes server send notifications
+                // coapRequest.setObserveOptionRequest();
+                client.writeCoapRequest(coapRequest, new SimpleResponseProcessor());
+            }
+
+
+        } catch (InvalidOptionException e) {
+            return false;
+        } catch (ToManyOptionsException e) {
+            return false;
+        } catch (URISyntaxException e) {
+            return false;
+        } catch (InvalidMessageException e) {
             return false;
         }
         return true;
@@ -71,7 +107,8 @@ public class CoapTestClient implements CoapClient, TestClient {
 
     @Override
     public void dispose() {
-        clientChannel.close();
+        Statistics.reset();
+        client.shutdown();
 
     }
 }
