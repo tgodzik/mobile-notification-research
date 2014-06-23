@@ -86,7 +86,7 @@ public class CoapTestClient implements TestClient {
 
             for (int i = 1; i <= NUMBER_OF_PARALLEL_REQUESTS; i++) {
                 URI targetURI = new URI("coap://" + SERVER_ADDRESS + "/observable/utc-time");
-                CoapRequest coapRequest = new CoapRequest(MsgType.CON, Code.GET, targetURI);
+                CoapRequest coapRequest = new CoapRequest(MsgType.NON, Code.GET, targetURI);
                 // this option makes server send notifications
                 // coapRequest.setObserveOptionRequest();
                 client.writeCoapRequest(coapRequest, new SimpleResponseProcessor());

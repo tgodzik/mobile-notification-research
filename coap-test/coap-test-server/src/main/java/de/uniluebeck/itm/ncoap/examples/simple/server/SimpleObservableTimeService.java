@@ -80,7 +80,7 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
             }
         }
 
-        //Prepare the response
+        //Prepare the respons getRootLoggere
         CoapResponse coapResponse;
         if (payload != null && contentType != null) {
             coapResponse = new CoapResponse(Code.CONTENT_205);
@@ -106,6 +106,7 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
 
     @Override
     public byte[] getSerializedResourceStatus(MediaType mediaType) throws MediaTypeNotSupportedException {
+        log.info("Got it");
         return ("" + System.currentTimeMillis()).getBytes();
     }
 }
