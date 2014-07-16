@@ -1,0 +1,6 @@
+How to start the broker:
+
+1. git clone http://git.eclipse.org/gitroot/mosquitto/org.eclipse.mosquitto.rsmb.git
+2. cd org.eclipse.mosquitto.rsmb.git/rsmb/src
+3. make
+4. ./broker broker.conf

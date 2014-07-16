@@ -154,7 +154,7 @@ class Client:
             publish.MsgId = 0
         else:
             publish.MsgId = self.__nextMsgid()
-            print "MsgId", publish.MsgId
+            #print "MsgId", publish.MsgId
             self.__receiver.outMsgs[publish.MsgId] = publish
         publish.Data = payload
         self.sock.send(publish.pack())
@@ -195,7 +195,7 @@ def publish(topic, payload, retained=False, port=1883, host="localhost"):
         publish.Flags.TopicIdType = MQTTSN.TOPIC_NORMAL
         publish.TopicId = topic
     publish.MsgId = 0
-    print "payload", payload
+    #print "payload", payload
     publish.Data = payload
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(publish.pack(), (host, port))

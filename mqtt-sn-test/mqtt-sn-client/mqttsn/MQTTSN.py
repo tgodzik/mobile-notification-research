@@ -144,7 +144,7 @@ class MessageHeaders:
     assert 2 <= self.Length <= 65535
     if self.Length < 256:
       buffer = chr(self.Length)
-      print "length", self.Length
+      #print "length", self.Length
     else:
       self.Length += 2
       buffer = chr(1) + writeInt16(self.Length)
@@ -490,7 +490,7 @@ class Publishes(Packets):
   def pack(self):
     buffer = self.Flags.pack()
     if self.Flags.TopicIdType in [TOPIC_NORMAL, TOPIC_PREDEFINED, 3]:
-      print "topic id is", self.TopicId
+      #print "topic id is", self.TopicId
       buffer += writeInt16(self.TopicId)
     elif self.Flags.TopicIdType == TOPIC_SHORTNAME:
       buffer += (self.TopicName + "  ")[0:2]
