@@ -1,5 +1,6 @@
 from mqttsn.MQTTSNclient import *
 import time
+import sys
 
 
 class Callback:
@@ -34,15 +35,12 @@ class Callback:
 
     def deliveryComplete(self, msgid):
         pass
-        #print "default deliveryComplete"
 
     def advertise(self, address, gwid, duration):
         pass
-        #print "advertise", address, gwid, duration
 
     def register(self, topicid, topicName):
         pass
-        #self.registered[topicid] = topicName
 
 
 if __name__ == "__main__":
@@ -54,14 +52,13 @@ if __name__ == "__main__":
 
     rc, topic1 = aclient.subscribe("test")
 
-    for i in range(0, 99):
-        print "receiving " + str(i)
-        aclient.receive()
+    aclient.startReceiver()
 
-    aclient.unsubscribe("test")
-    aclient.disconnect()
+    data = sys.stdin.readline()
 
     print callback.messages_number
     print callback.average_delay
     print callback.order
     print callback.last_message - callback.first_message
+
+    aclient.stopReceiver()

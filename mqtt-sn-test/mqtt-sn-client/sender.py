@@ -1,21 +1,18 @@
 from mqttsn.MQTTSNclient import *
 import time
+import sys
 
 
 class Callback:
     def __init__(self):
         self.events = []
         self.registered = {}
-        self.i = 0
 
     def connectionLost(self, cause):
         print "default connectionLost", cause
         self.events.append("disconnected")
 
     def messageArrived(self, topicName, payload, qos, retained, msgid):
-        #print "default publishArrived", topicName, payload, qos, retained, msgid
-        print self.i
-        self.i += 1
         return True
 
     def deliveryComplete(self, msgid):
@@ -30,16 +27,23 @@ class Callback:
 
 if __name__ == "__main__":
 
+    #sends n messages
+    n = 400
     aclient = Client("sender", host="127.0.0.1", port=2884)
     aclient.registerCallback(Callback())
     aclient.connect()
 
-
     rc, topic1 = aclient.subscribe("test")
-    for i in range(0, 100):
-        send = str(long(round(time.time() * 1000)))
-        aclient.publish(topic1, send, qos=0)
 
+    for i in range(0, n):
+        send = str(long(round(time.time() * 1000)))
+        aclient.publish(topic1, send, qos=0, retained=True)
+
+    aclient.startReceiver()
+
+    data = sys.stdin.readline()
+
+    aclient.stopReceiver()
     aclient.unsubscribe("test")
     aclient.disconnect()
 
