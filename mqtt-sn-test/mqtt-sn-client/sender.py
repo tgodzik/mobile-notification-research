@@ -28,7 +28,7 @@ class Callback:
 if __name__ == "__main__":
 
     #sends n messages
-    n = 400
+    n = 500
     aclient = Client("sender", host="127.0.0.1", port=2884)
     aclient.registerCallback(Callback())
     aclient.connect()
@@ -37,7 +37,8 @@ if __name__ == "__main__":
 
     for i in range(0, n):
         send = str(long(round(time.time() * 1000)))
-        aclient.publish(topic1, send, qos=0, retained=True)
+        aclient.publish(topic1, send, qos=0, retained=False)
+    data = sys.stdin.readline()
 
     aclient.startReceiver()
 
