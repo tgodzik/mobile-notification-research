@@ -21,7 +21,8 @@ import thread
 import types
 import struct
 
-import MQTTSN, MQTTSNinternal
+from mqttsn import MQTTSN, MQTTSNinternal
+
 
 class Client:
     def __init__(self, clientid, host="localhost", port=1883):

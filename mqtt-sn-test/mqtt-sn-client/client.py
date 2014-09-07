@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from mqttsn.MQTTSNclient import *
 import time
 import sys
@@ -55,6 +53,7 @@ if __name__ == "__main__":
     rc, topic1 = aclient.subscribe("test")
 
     aclient.startReceiver()
+
     data = sys.stdin.readline()
 
     print callback.messages_number
