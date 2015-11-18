@@ -1,17 +1,32 @@
 package pl.edu.agh.mobilne.modbus_test.app;
 
-
 import android.os.Handler;
 
-import org.droidsoapclient.client.SoapClient;
+import com.ghgande.j2mod.modbus.io.ModbusTCPTransaction;
+import com.ghgande.j2mod.modbus.msg.WriteMultipleRegistersRequest;
+import com.ghgande.j2mod.modbus.msg.WriteMultipleRegistersResponse;
+import com.ghgande.j2mod.modbus.net.TCPMasterConnection;
+import com.ghgande.j2mod.modbus.procimg.Register;
+import com.ghgande.j2mod.modbus.procimg.SimpleRegister;
 
+import java.net.InetAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SoapTestClient implements TestClient {
 
-    SoapClient client;
     private Handler messageHandler = new Handler();
     private MessageHandler messageListener;
     private String lastMessage = "no msg";
+    protected static TCPMasterConnection con = null; //the conection
+    protected static ModbusTCPTransaction trans = null; //the transaction
+    protected static WriteMultipleRegistersRequest req = null; //the request
+    protected static WriteMultipleRegistersResponse res = null; //the response
+    /* Variables for storing the parameters */
+    protected static InetAddress addr = null; //the slave's address
+    protected static final int port = 3000;
+    protected Register register = null;
+    protected Register[] registers = null;
 
     final Runnable returnMessage = new Runnable() {
         public void run() {
@@ -26,22 +41,28 @@ public class SoapTestClient implements TestClient {
 
     @Override
     public boolean create() {
-        client = new SoapClient("http://10.0.2.2:8008/", "Time", "http://example.com/sample.wsdl",
-                "http://10.0.2.2:8008/",false);
+        try {
+            addr = InetAddress.getByName("10.0.2.2");
+            con = new TCPMasterConnection(addr);
+            con.setPort(port);
+            con.connect();
 
-         //get response
-
-        int NUMBER_OF_PARALLEL_REQUESTS = 100;
-        for (int i = 1; i <= NUMBER_OF_PARALLEL_REQUESTS; i++) {
-            client.addParameter("a", 0);
-            try {
-                Object obj = client.executeCallResponse();
-                lastMessage =  obj.toString();
+            int NUMBER_OF_PARALLEL_REQUESTS = 100;
+            for (int i = 1; i <= NUMBER_OF_PARALLEL_REQUESTS; i++) {
+                register = new SimpleRegister(3);
+                registers = new Register[1];
+                registers[0] = register;
+                req = new WriteMultipleRegistersRequest(0, registers);
+                trans = new ModbusTCPTransaction(con);
+                res = (WriteMultipleRegistersResponse) trans.getResponse();
+                lastMessage = new String(res.getMessage());
                 System.out.println(lastMessage);
                 messageHandler.post(returnMessage);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            con.close();
         }
         return true;
     }
