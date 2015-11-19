@@ -1,11 +1,8 @@
 package pl.edu.agh.mobilne.modbus_test.app;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -61,7 +58,7 @@ public class MainActivity extends Activity {
         order = (EditText) findViewById(R.id.orderField);
 
         //Create the client
-        client = new SoapTestClient(/*"192.168.2.8", 5683*/);
+        client = new ModbusTestClient(/*"192.168.2.8", 5683*/);
 
         //register for messages
         client.setMessageHandler(new TestClient.MessageHandler() {
