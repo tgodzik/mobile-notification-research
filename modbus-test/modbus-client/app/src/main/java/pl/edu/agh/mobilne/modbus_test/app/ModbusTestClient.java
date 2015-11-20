@@ -5,12 +5,11 @@ import android.util.Log;
 import com.ghgande.j2mod.modbus.ModbusCoupler;
 import com.ghgande.j2mod.modbus.net.ModbusTCPListener;
 import com.ghgande.j2mod.modbus.procimg.Register;
-import com.ghgande.j2mod.modbus.procimg.SimpleInputRegister;
 import com.ghgande.j2mod.modbus.procimg.SimpleProcessImage;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
+import java.util.Date;
 
 public class ModbusTestClient implements TestClient {
 
@@ -48,9 +47,6 @@ public class ModbusTestClient implements TestClient {
 
 class TestRegister implements Register {
 
-    byte head = (byte) 255;
-    byte val = (byte) 255;
-
     @Override
     public void setValue(int i) {
 
@@ -68,10 +64,8 @@ class TestRegister implements Register {
 
     @Override
     public int getValue() {
-        Statistics.addMessage(val+"");
-        Log.i("modbus", "val is now " + val);
-        val++;
-        return val;
+        long timestamp = new Date().getTime();
+        return (int)(timestamp % 65536);
     }
 
     @Override
@@ -87,9 +81,9 @@ class TestRegister implements Register {
     @Override
     public byte[] toBytes() {
         byte[] t = new byte[2];
-        getValue();
-        t[0] = head;
-        t[1] = val;
+        int timestamp = getValue();
+        t[0] = (byte) (timestamp / 256);
+        t[1] = (byte) (timestamp % 256);
         return t;
     }
 }
