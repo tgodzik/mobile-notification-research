@@ -13,7 +13,7 @@ object ModbusServer extends App {
   val con = new TCPMasterConnection(addr)
   con.setPort(port)
   con.connect()
-  val count = 10
+  val count = 1000
   val noOfMsg = 1
 
   val avg = (0 until count).map { x =>
@@ -22,13 +22,13 @@ object ModbusServer extends App {
       val trans = new ModbusTCPTransaction(con)
       trans.setRequest(req)
       trans.execute()
-      val bytes = trans.getResponse.getMessage.drop(1).map(_.toByte)
+      val bytes = trans.getResponse.getMessage.drop(1)
       val timestampEnd = bytes(0) * 256 + bytes(1)
       val timestampNow = new Date().getTime
       val timestampSent = timestampNow - (timestampNow % 65536) + timestampEnd
-      println(timestampNow - timestampSent)
-      timestampNow - timestampSent
-    }.sum
+      println((timestampNow - timestampSent) % 65536)
+      (timestampNow - timestampSent) % 65536
+    }.sum.toDouble
   }.sum / count
 
   println("avg " + avg)
